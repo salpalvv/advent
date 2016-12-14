@@ -17,10 +17,7 @@ fn main() {
                             ).get_matches();
 
     let day: String = matches.value_of("day").unwrap_or("1").parse().unwrap();
-    let day_int: i32 = day
-            .trim()
-            .parse()
-            .expect("Wanted a number");
+    let day_val: i32 = day.parse().expect("Wanted a number");
     let input_file: String = matches.value_of("input").unwrap_or("inputs/day1").parse().unwrap();
 
     let mut file = File::open(&input_file)
@@ -30,7 +27,7 @@ fn main() {
     file.read_to_string(&mut input)
         .expect("could not read file");
 
-    let answer = lib::solve(&day_int, &input);
+    let answer = lib::solve(&day_val, &input);
     println!("The answer for day {} is {}", &day, answer);
 
 }

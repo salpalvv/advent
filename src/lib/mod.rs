@@ -10,7 +10,7 @@ pub fn solve(day: &i32, input: &str) -> i32 {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
 
     #[test]
