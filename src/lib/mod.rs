@@ -1,0 +1,20 @@
+mod day1;
+pub fn solve(day: &i32, input: &str) -> i32 {
+    match *day {
+        1 => {
+            return day1::solve(input);
+        },
+        2...25 => unimplemented!(),
+        _ => panic!("There is no day {}", day),
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test(){
+        assert!(false);
+    }
+}
