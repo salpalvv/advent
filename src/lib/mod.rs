@@ -1,4 +1,5 @@
 mod day1;
+
 pub fn solve(day: &i32, input: &str) -> i32 {
     match *day {
         1 => {

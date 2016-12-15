@@ -3,7 +3,7 @@ use std::error::Error;
 
 
 pub fn solve(input: &str) -> i32 {
-    let mut instructions = parse_input(input);
+    let instructions = parse_input(input);
     let mut solver = Solver::new();
     let parsed_instructions: Result<Vec<_>, _> = instructions.iter().map(|&x| x.parse()).collect();
     let parsed_instructions = parsed_instructions.expect("couldn't parse instructions");
@@ -106,7 +106,7 @@ impl FromStr for Direction {
 }
 
 fn parse_input(input: &str) -> Vec<&str> {
-    let mut split_input = input.split(", ");
+    let split_input = input.split(", ");
     let retvec: Vec<&str> = split_input.collect();
     retvec
 }
