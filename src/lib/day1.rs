@@ -2,19 +2,30 @@ use std::str::FromStr;
 use std::error::Error;
 
 
-pub fn solve(input: &str) -> i32 {
+pub fn solve_p1(input: &str) -> i32 {
     let instructions = parse_input(input);
     let mut solver = Solver::new();
     let parsed_instructions: Result<Vec<_>, _> = instructions.iter().map(|&x| x.parse()).collect();
     let parsed_instructions = parsed_instructions.expect("couldn't parse instructions");
-    solver.execute(&parsed_instructions);
-    solver.distance()
+    solver.execute_p1(&parsed_instructions);
+    solver.distance_p1()
+}
+
+pub fn solve_p2(input: &str) -> i32 {
+    let instructions = parse_input(input);
+    let mut solver = Solver::new();
+    let parsed_instructions: Result<Vec<_>, _> = instructions.iter().map(|&x| x.parse()).collect();
+    let parsed_instructions = parsed_instructions.expect("couldn't parse instructions");
+    solver.execute_p2(&parsed_instructions);
+    println!("{:?}", solver.coords_visited);
+    solver.distance_p2()
 }
 
 #[derive(Debug, PartialEq)]
 struct Solver {
     coords: [i32; 2],
     cardinal: Cardinal,
+    coords_visited: Vec<[i32;2]>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -30,10 +41,12 @@ impl Solver {
         Solver {
             coords: [0; 2],
             cardinal: Cardinal::North,
+            coords_visited: vec!([0;2]),
         }
     }
 
-    fn execute(&mut self, instructions: &[Direction]) {
+    /// Part 1 execute {{{
+    fn execute_p1(&mut self, instructions: &[Direction]) {
         for instruction in instructions {
             match *instruction {
                 Direction::Right(ref distance) => {
@@ -79,9 +92,102 @@ impl Solver {
             }
         }
     }
+    // }}}
 
-    fn distance(&self) -> i32 {
-        println!("x: {}, y: {}", self.coords[0], self.coords[1]);
+    /// Part 2 execute
+    fn execute_p2(&mut self, instructions: &[Direction]) {
+        for instruction in instructions {
+            match *instruction {
+                Direction::Right(ref distance) => {
+                    match self.cardinal {
+                        Cardinal::North => {
+                            let sp = self.coords[0] + 1;
+                            let ep = self.coords[0] + *distance + 1;
+                            for x in sp..ep {
+                                self.coords_visited.push([x,self.coords[1]]);
+                            }
+                            self.coords[0] += *distance;
+                            self.cardinal = Cardinal::East;
+                        },
+                        Cardinal::East => {
+                            let ep = self.coords[1];
+                            let sp = self.coords[1] - *distance;
+                            for y in sp..ep {
+                                self.coords_visited.push([self.coords[0],y]);
+                            }
+                            self.coords[1] -= *distance;
+                            self.cardinal = Cardinal::South;
+                        },
+                        Cardinal::South => {
+                            let ep = self.coords[0];
+                            let sp = self.coords[0] - *distance;
+                            for x in sp..ep {
+                                self.coords_visited.push([x,self.coords[1]]);
+                            }
+                            self.coords[0] -= *distance;
+                            self.cardinal = Cardinal::West;
+                        },
+                        Cardinal::West => {
+                            let sp = self.coords[1] + 1;
+                            let ep = self.coords[1] + *distance + 1;
+                            for y in sp..ep {
+                                self.coords_visited.push([self.coords[0],y]);
+                            }
+                            self.coords[1] += *distance;
+                            self.cardinal = Cardinal::North;
+                        },
+                    }
+                },
+                Direction::Left(ref distance) => {
+                    match self.cardinal {
+                        Cardinal::North => {
+                            let ep = self.coords[0];
+                            let sp = self.coords[0] - *distance;
+                            for x in sp..ep {
+                                self.coords_visited.push([x,self.coords[1]]);
+                            }
+                            self.coords[0] -= *distance;
+                            self.cardinal = Cardinal::West;
+                        },
+                        Cardinal::East => {
+                            let sp = self.coords[1] + 1;
+                            let ep = self.coords[1] + *distance + 1;
+                            for y in sp..ep {
+                                self.coords_visited.push([self.coords[0],y]);
+                            }
+                            self.coords[1] += *distance;
+                            self.cardinal = Cardinal::North;
+                        },
+                        Cardinal::South => {
+                            let sp = self.coords[0] + 1;
+                            let ep = self.coords[0] + *distance + 1;
+                            for x in sp..ep {
+                                self.coords_visited.push([x,self.coords[1]]);
+                            }
+                            self.coords[0] += *distance;
+                            self.cardinal = Cardinal::East;
+                        },
+                        Cardinal::West => {
+                            let ep = self.coords[1];
+                            let sp = self.coords[1] - *distance;
+                            for y in sp..ep {
+                                self.coords_visited.push([self.coords[0],y]);
+                            }
+                            self.coords[1] -= *distance;
+                            self.cardinal = Cardinal::South;
+                        },
+                    }
+                }
+            }
+        }
+    }
+
+    fn distance_p1(&self) -> i32 {
+        let distance = self.coords.iter().map(|&x| x.abs()).sum();
+        distance
+    }
+
+    fn distance_p2(&self) -> i32 {
         let distance = self.coords.iter().map(|&x| x.abs()).sum();
         distance
     }
@@ -90,7 +196,7 @@ impl Solver {
 #[derive(Debug, PartialEq)]
 enum Direction {
     Right(i32),
-    Left(i32)
+    Left(i32),
 }
 
 impl FromStr for Direction {
@@ -133,27 +239,27 @@ mod tests {
     }
 
     #[test]
-    fn execute_instructions(){
+    fn execute_instructions_p1(){
         let mut solver = Solver::new();
-        solver.execute(&[Direction::Right(2)]);
-        assert_eq!(solver.distance(), 2);
+        solver.execute_p1(&[Direction::Right(2)]);
+        assert_eq!(solver.distance_p1(), 2);
     }
 
     #[test]
     fn sample_1() {
         let input = "R2, L3";
-        assert_eq!(solve(input),5);
+        assert_eq!(solve_p1(input),5);
     }
 
     #[test]
     fn sample_2() {
         let input = "R2, R2, R2";
-        assert_eq!(solve(input),2);
+        assert_eq!(solve_p1(input),2);
     }
 
     #[test]
     fn sample_3() {
         let input = "R5, L5, R5, R3";
-        assert_eq!(solve(input),12);
+        assert_eq!(solve_p1(input),12);
     }
 }
