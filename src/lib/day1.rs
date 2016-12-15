@@ -71,7 +71,7 @@ impl Solver {
                             self.cardinal = Cardinal::East;
                         },
                         Cardinal::West => {
-                            self.coords[1] += *distance;
+                            self.coords[1] -= *distance;
                             self.cardinal = Cardinal::South;
                         },
                     }
@@ -81,6 +81,7 @@ impl Solver {
     }
 
     fn distance(&self) -> i32 {
+        println!("x: {}, y: {}", self.coords[0], self.coords[1]);
         let distance = self.coords.iter().map(|&x| x.abs()).sum();
         distance
     }
@@ -96,7 +97,7 @@ impl FromStr for Direction {
     type Err = Box<Error>;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let (direction, amt) = s.split_at(1);
-        let amt_val: i32 = amt.parse().expect("expecting number");
+        let amt_val: i32 = amt.trim().parse().expect("expecting number");
         match direction {
             "R" => Ok(Direction::Right(amt_val)),
             "L" => Ok(Direction::Left(amt_val)),
@@ -119,8 +120,10 @@ mod tests {
     fn parse_dir(){
         let dir_r: Direction = "R2".parse().expect("couldn't parse");
         let dir_l: Direction = "L55".parse().expect("couldn't parse");
+        let dir_long: Direction = "R525".parse().expect("couldn't parse");
         assert_eq!(dir_r,Direction::Right(2));
         assert_eq!(dir_l,Direction::Left(55));
+        assert_eq!(dir_long,Direction::Right(525));
     }
 
     #[test]
