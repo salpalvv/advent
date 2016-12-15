@@ -17,7 +17,6 @@ pub fn solve_p2(input: &str) -> i32 {
     let parsed_instructions: Result<Vec<_>, _> = instructions.iter().map(|&x| x.parse()).collect();
     let parsed_instructions = parsed_instructions.expect("couldn't parse instructions");
     solver.execute_p2(&parsed_instructions);
-    println!("{:?}", solver.coords_visited);
     solver.distance_p2()
 }
 
@@ -26,6 +25,7 @@ struct Solver {
     coords: [i32; 2],
     cardinal: Cardinal,
     coords_visited: Vec<[i32;2]>,
+    dupes: Vec<[i32;2]>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -42,6 +42,7 @@ impl Solver {
             coords: [0; 2],
             cardinal: Cardinal::North,
             coords_visited: vec!([0;2]),
+            dupes: Vec::new(),
         }
     }
 
@@ -104,6 +105,9 @@ impl Solver {
                             let sp = self.coords[0] + 1;
                             let ep = self.coords[0] + *distance + 1;
                             for x in sp..ep {
+                                if self.coords_visited.contains(&[x,self.coords[1]]){
+                                    self.dupes.push([x,self.coords[1]]);
+                                }
                                 self.coords_visited.push([x,self.coords[1]]);
                             }
                             self.coords[0] += *distance;
@@ -113,6 +117,9 @@ impl Solver {
                             let ep = self.coords[1];
                             let sp = self.coords[1] - *distance;
                             for y in sp..ep {
+                                if self.coords_visited.contains(&[self.coords[0],y]){
+                                    self.dupes.push([self.coords[0],y]);
+                                }
                                 self.coords_visited.push([self.coords[0],y]);
                             }
                             self.coords[1] -= *distance;
@@ -122,6 +129,9 @@ impl Solver {
                             let ep = self.coords[0];
                             let sp = self.coords[0] - *distance;
                             for x in sp..ep {
+                                if self.coords_visited.contains(&[x,self.coords[1]]){
+                                    self.dupes.push([x,self.coords[1]]);
+                                }
                                 self.coords_visited.push([x,self.coords[1]]);
                             }
                             self.coords[0] -= *distance;
@@ -131,6 +141,9 @@ impl Solver {
                             let sp = self.coords[1] + 1;
                             let ep = self.coords[1] + *distance + 1;
                             for y in sp..ep {
+                                if self.coords_visited.contains(&[self.coords[0],y]){
+                                    self.dupes.push([self.coords[0],y]);
+                                }
                                 self.coords_visited.push([self.coords[0],y]);
                             }
                             self.coords[1] += *distance;
@@ -144,6 +157,9 @@ impl Solver {
                             let ep = self.coords[0];
                             let sp = self.coords[0] - *distance;
                             for x in sp..ep {
+                                if self.coords_visited.contains(&[x,self.coords[1]]){
+                                    self.dupes.push([x,self.coords[1]]);
+                                }
                                 self.coords_visited.push([x,self.coords[1]]);
                             }
                             self.coords[0] -= *distance;
@@ -153,6 +169,9 @@ impl Solver {
                             let sp = self.coords[1] + 1;
                             let ep = self.coords[1] + *distance + 1;
                             for y in sp..ep {
+                                if self.coords_visited.contains(&[self.coords[0],y]){
+                                    self.dupes.push([self.coords[0],y]);
+                                }
                                 self.coords_visited.push([self.coords[0],y]);
                             }
                             self.coords[1] += *distance;
@@ -162,6 +181,9 @@ impl Solver {
                             let sp = self.coords[0] + 1;
                             let ep = self.coords[0] + *distance + 1;
                             for x in sp..ep {
+                                if self.coords_visited.contains(&[x,self.coords[1]]){
+                                    self.dupes.push([x,self.coords[1]]);
+                                }
                                 self.coords_visited.push([x,self.coords[1]]);
                             }
                             self.coords[0] += *distance;
@@ -171,6 +193,9 @@ impl Solver {
                             let ep = self.coords[1];
                             let sp = self.coords[1] - *distance;
                             for y in sp..ep {
+                                if self.coords_visited.contains(&[self.coords[0],y]){
+                                    self.dupes.push([self.coords[0],y]);
+                                }
                                 self.coords_visited.push([self.coords[0],y]);
                             }
                             self.coords[1] -= *distance;
@@ -188,7 +213,7 @@ impl Solver {
     }
 
     fn distance_p2(&self) -> i32 {
-        let distance = self.coords.iter().map(|&x| x.abs()).sum();
+        let distance = self.dupes[0].iter().map(|&x| x.abs()).sum();
         distance
     }
 }
