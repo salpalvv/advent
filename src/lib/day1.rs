@@ -271,20 +271,41 @@ mod tests {
     }
 
     #[test]
-    fn sample_1() {
+    fn sample_1_p1() {
         let input = "R2, L3";
         assert_eq!(solve_p1(input),5);
     }
 
     #[test]
-    fn sample_2() {
+    fn sample_2_p1() {
         let input = "R2, R2, R2";
         assert_eq!(solve_p1(input),2);
     }
 
     #[test]
-    fn sample_3() {
+    fn sample_3_p1() {
         let input = "R5, L5, R5, R3";
         assert_eq!(solve_p1(input),12);
+    }
+
+    #[test]
+    fn execute_instructions_p2(){
+        let mut solver = Solver::new();
+        solver.execute_p2(&[Direction::Right(2)]);
+        assert_eq!(solver.coords_visited, &[[0,0],[1,0],[2,0]]);
+
+        let mut solver2 = Solver::new();
+        solver2.execute_p2(&[
+                          Direction::Right(8),
+                          Direction::Right(4),
+                          Direction::Right(4),
+                          Direction::Right(8)]);
+        assert_eq!(solver2.distance_p2(),4)
+    }
+
+    #[test]
+    fn sample_1_p2() {
+        let input = "R8, R4, R4, R8";
+        assert_eq!(solve_p2(input),4);
     }
 }
