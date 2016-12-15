@@ -6,6 +6,7 @@ rust:
     - stable
 matrix:
     allow_failures:
-        - rust: nightly
+        - rust: beta
+        - rust: stable
 
 sudo: false
