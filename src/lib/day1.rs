@@ -1,6 +1,16 @@
 use std::str::FromStr;
 use std::error::Error;
 
+
+pub fn solve(input: &str) -> i32 {
+    let mut instructions = parse_input(input);
+    let mut solver = Solver::new();
+    let parsed_instructions: Result<Vec<_>, _> = instructions.iter().map(|&x| x.parse()).collect();
+    let parsed_instructions = parsed_instructions.expect("couldn't parse instructions");
+    solver.execute(&parsed_instructions);
+    solver.distance()
+}
+
 #[derive(Debug, PartialEq)]
 struct Solver {
     coords: [i32; 2],
@@ -71,7 +81,7 @@ impl Solver {
     }
 
     fn distance(&self) -> i32 {
-        let distance = self.coords.iter().sum();
+        let distance = self.coords.iter().map(|&x| x.abs()).sum();
         distance
     }
 }
@@ -99,14 +109,6 @@ fn parse_input(input: &str) -> Vec<&str> {
     let mut split_input = input.split(", ");
     let retvec: Vec<&str> = split_input.collect();
     retvec
-}
-
-pub fn solve(input: &str) -> i32 {
-    let mut instructions = parse_input(input);
-    let solver = Solver::new();
-    let parsed_instructions: Direction = instructions.iter().map(|&x| x.parse()).collect();
-    solver.execute(&parsed_instructions);
-    solver.distance()
 }
 
 #[cfg(test)]

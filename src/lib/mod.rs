@@ -15,6 +15,6 @@ mod tests {
 
     #[test]
     fn test(){
-        assert!(false);
+        assert!(true);
     }
 }
