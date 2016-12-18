@@ -95,7 +95,7 @@ impl Solver {
     }
     // }}}
 
-    /// Part 2 execute
+    /// Part 2 execute {{{
     fn execute_p2(&mut self, instructions: &[Direction]) {
         for instruction in instructions {
             match *instruction {
@@ -206,6 +206,7 @@ impl Solver {
             }
         }
     }
+    /// }}}
 
     fn distance_p1(&self) -> i32 {
         let distance = self.coords.iter().map(|&x| x.abs()).sum();
